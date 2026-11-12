@@ -1,0 +1,147 @@
+@import "tailwindcss";
+
+/*
+  Meridian palette
+  night  – page background, deep violet rather than black
+  panel  – raised surfaces
+  line   – borders and dividers
+  ink    – primary text
+  muted  – secondary text
+  cue    – the approach-ring cyan: actions and focus
+  gold   – ratings and the verified badge only
+  alert  – destructive actions and disputes
+*/
+@theme static {
+  --color-night: #17143a;
+  --color-panel: #221e52;
+  --color-panel-2: #2b2663;
+  --color-line: #3b3579;
+  --color-ink: #efebff;
+  --color-muted: #a7a1d6;
+  --color-cue: #5ee3f0;
+  --color-gold: #ffcf5a;
+  --color-alert: #ff6b8a;
+
+  --font-display: "Unbounded", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, sans-serif;
+}
+
+html {
+  background: var(--color-night);
+  color: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Form controls */
+.field {
+  width: 100%;
+  background: var(--color-night);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  color: var(--color-ink);
+}
+.field:focus {
+  border-color: var(--color-cue);
+  outline: none;
+}
+.label {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 700;
+  transition: background-color 120ms, color 120ms;
+}
+.btn-primary {
+  background: var(--color-cue);
+  color: var(--color-night);
+}
+.btn-primary:hover {
+  background: #8aedf6;
+}
+.btn-ghost {
+  border: 1px solid var(--color-line);
+  color: var(--color-ink);
+}
+.btn-ghost:hover {
+  border-color: var(--color-cue);
+}
+.btn-danger {
+  border: 1px solid var(--color-alert);
+  color: var(--color-alert);
+}
+.btn-danger:hover {
+  background: var(--color-alert);
+  color: var(--color-night);
+}
+.btn-sm {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.9rem;
+}
+
+/* The hero's hit circle: one approach ring closes in on page load, once. */
+@keyframes approach {
+  from {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes hit {
+  0%,
+  92% {
+    box-shadow: 0 0 0 0 rgb(94 227 240 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 18px rgb(94 227 240 / 0);
+  }
+}
+.approach-ring {
+  animation: approach 1.4s cubic-bezier(0.25, 0.1, 0.25, 1) both;
+}
+.hit-circle {
+  animation: hit 1.6s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .approach-ring,
+  .hit-circle {
+    animation: none;
+  }
+}
