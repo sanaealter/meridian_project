@@ -36,6 +36,13 @@ npm run dev               # http://localhost:3000
 
 To make yourself admin: put your osu! user ID (the number in your osu! profile URL) in `ADMIN_OSU_IDS` and sign in.
 
+### Testing as other users (development only)
+
+With `DEV_LOGIN=true` in `.env` and the app running via `npm run dev`, open
+`http://localhost:3000/api/dev-login?user=test_buyer` to sign in as a seeded user without osu!.
+Use a private browser window so you can be the buyer in one window and the seller in another.
+The route returns 404 in production builds regardless of the setting.
+
 ## What's in the box
 
 | Area | Routes | Notes |
