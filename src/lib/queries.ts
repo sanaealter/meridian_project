@@ -10,9 +10,9 @@ export async function sellerStats(sellerId: string) {
     .where(and(eq(reviews.sellerId, sellerId), eq(reviews.isHidden, false)));
   const [o] = await db
     .select({
-      completed: sql<number>`count(*) filter (where ${orders.status} = 'completed')`.mapWith(Number),
-      cancelled: sql<number>`count(*) filter (where ${orders.status} = 'cancelled')`.mapWith(Number),
-      active: sql<number>`count(*) filter (where ${orders.status} in ('accepted','in_progress','delivered'))`.mapWith(Number),
+      completed: sql<number>`coalesce(sum(case when ${orders.status} = 'completed' then 1 else 0 end), 0)`.mapWith(Number),
+      cancelled: sql<number>`coalesce(sum(case when ${orders.status} = 'cancelled' then 1 else 0 end), 0)`.mapWith(Number),
+      active: sql<number>`coalesce(sum(case when ${orders.status} in ('accepted','in_progress','delivered') then 1 else 0 end), 0)`.mapWith(Number),
     })
     .from(orders)
     .where(eq(orders.sellerId, sellerId));
@@ -36,8 +36,8 @@ export async function platformStats() {
     .where(eq(services.status, "active"));
   const [o] = await db
     .select({
-      completed: sql<number>`count(*) filter (where ${orders.status} = 'completed')`.mapWith(Number),
-      disputed: sql<number>`count(*) filter (where ${orders.status} = 'disputed')`.mapWith(Number),
+      completed: sql<number>`coalesce(sum(case when ${orders.status} = 'completed' then 1 else 0 end), 0)`.mapWith(Number),
+      disputed: sql<number>`coalesce(sum(case when ${orders.status} = 'disputed' then 1 else 0 end), 0)`.mapWith(Number),
       total: count(),
       volume: sum(sql`case when ${orders.status} = 'completed' then ${orders.priceCents} else 0 end`).mapWith(Number),
       fees: sum(sql`case when ${orders.status} = 'completed' then ${orders.feeCents} else 0 end`).mapWith(Number),

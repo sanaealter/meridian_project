@@ -7,13 +7,21 @@ A commission marketplace for osu! beatmaps. Buyers order maps from mappers who s
 ## Stack
 
 - [Next.js 16](https://nextjs.org) (App Router, Server Actions, Cache Components)
-- PostgreSQL with [Drizzle ORM](https://orm.drizzle.team)
+- MySQL 8+ (or MariaDB 10.6+) with [Drizzle ORM](https://orm.drizzle.team)
 - [Auth.js](https://authjs.dev) with the osu! OAuth provider
 - Tailwind CSS 4
 
 ## Getting started
 
-Requirements: Node.js 20+, PostgreSQL 14+.
+Requirements: Node.js 20+, MySQL 8+ (or MariaDB 10.6+).
+
+Create the database once (in MySQL Workbench or the `mysql` command line, logged in as root):
+
+```sql
+CREATE DATABASE meridian CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'meridian'@'localhost' IDENTIFIED BY 'meridian';
+GRANT ALL PRIVILEGES ON meridian.* TO 'meridian'@'localhost';
+```
 
 ```bash
 npm install
@@ -27,7 +35,7 @@ npm run dev               # http://localhost:3000
 
 | Variable | What it is |
 |---|---|
-| `DATABASE_URL` | Postgres connection string |
+| `DATABASE_URL` | MySQL connection string, e.g. `mysql://meridian:meridian@localhost:3306/meridian` |
 | `AUTH_SECRET` | Random secret for sessions. Generate with `npx auth secret` |
 | `AUTH_URL` | Public URL of the site, e.g. `https://meridian.example`. Needed when self-hosting |
 | `AUTH_OSU_ID` / `AUTH_OSU_SECRET` | From an OAuth application at osu.ppy.sh → Settings → OAuth. Callback URL: `<AUTH_URL>/api/auth/callback/osu` |

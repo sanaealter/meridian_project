@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, desc, eq } from "drizzle-orm";
@@ -9,6 +10,7 @@ import { getCurrentUser } from "@/lib/session";
 import { Avatar, Empty, ModeTag, Stars, UserLink, VerifiedBadge } from "@/components/ui";
 
 export default async function ProfilePage({ params }: PageProps<"/u/[username]">) {
+  await connection(); // live data: render on each request, not at build time
   const { username } = await params;
   const user = await db.query.users.findFirst({ where: eq(users.username, decodeURIComponent(username)) });
   if (!user || user.isBanned) notFound();

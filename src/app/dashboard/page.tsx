@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { desc, eq, or } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
+import { alias } from "drizzle-orm/mysql-core";
 import { db } from "@/db";
 import { orders, services, users } from "@/db/schema";
 import { requireUser } from "@/lib/session";

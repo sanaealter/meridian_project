@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { and, desc, eq, ilike, type SQL } from "drizzle-orm";
+import { and, desc, eq, like, type SQL } from "drizzle-orm";
 import { db } from "@/db";
 import { users } from "@/db/schema";
 import { date } from "@/lib/format";
@@ -11,7 +11,7 @@ export default async function AdminUsers({ searchParams }: PageProps<"/admin/use
   const sp = await searchParams;
   const q = typeof sp.q === "string" ? sp.q.trim() : "";
   const conditions: SQL[] = [];
-  if (q) conditions.push(ilike(users.username, `%${q}%`));
+  if (q) conditions.push(like(users.username, `%${q}%`));
   if (sp.verified === "0") conditions.push(eq(users.isVerified, false));
   if (sp.verified === "1") conditions.push(eq(users.isVerified, true));
   if (sp.banned === "1") conditions.push(eq(users.isBanned, true));

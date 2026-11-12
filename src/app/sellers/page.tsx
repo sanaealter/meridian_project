@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import Link from "next/link";
 import { listServices } from "@/lib/queries";
 import { modeLabel } from "@/lib/format";
@@ -10,6 +11,7 @@ export const metadata = { title: "Find a mapper" };
 const modes: GameMode[] = ["osu", "taiko", "fruits", "mania"];
 
 export default async function SellersPage({ searchParams }: PageProps<"/sellers">) {
+  await connection(); // live data: render on each request, not at build time
   const sp = await searchParams;
   const mode = typeof sp.mode === "string" ? sp.mode : undefined;
   const verifiedOnly = sp.verified === "1";

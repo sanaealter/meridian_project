@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { and, desc, eq } from "drizzle-orm";
@@ -11,6 +12,7 @@ import { FEE_BPS, date, money, rating, unitLabel } from "@/lib/format";
 import { Avatar, ModeTag, Stars, UserLink, VerifiedBadge } from "@/components/ui";
 
 export default async function ServicePage({ params }: PageProps<"/services/[id]">) {
+  await connection(); // live data: render on each request, not at build time
   const { id } = await params;
   if (!z.string().uuid().safeParse(id).success) notFound();
 

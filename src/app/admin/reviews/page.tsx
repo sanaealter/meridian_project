@@ -1,5 +1,5 @@
 import { desc, eq } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
+import { alias } from "drizzle-orm/mysql-core";
 import { db } from "@/db";
 import { reviews, users } from "@/db/schema";
 import { adminDeleteReview, adminToggleReview, adminUpdateReview } from "@/app/admin/actions";

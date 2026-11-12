@@ -48,9 +48,10 @@ function parseService(formData: FormData) {
 export async function createService(formData: FormData) {
   const user = await requireUser();
   const values = parseService(formData);
-  const [s] = await db.insert(services).values({ ...values, sellerId: user.id }).returning({ id: services.id });
+  const id = crypto.randomUUID();
+  await db.insert(services).values({ ...values, id, sellerId: user.id });
   revalidatePath("/sellers");
-  redirect(`/services/${s.id}`);
+  redirect(`/services/${id}`);
 }
 
 export async function updateService(serviceId: string, formData: FormData) {
@@ -79,9 +80,11 @@ export async function createOrder(serviceId: string, formData: FormData) {
 
   const data = orderSchema.parse(Object.fromEntries(formData));
   // Starting price is the listed price; the seller confirms the final price when accepting.
-  const [o] = await db
+  const id = crypto.randomUUID();
+  await db
     .insert(orders)
     .values({
+      id,
       serviceId,
       buyerId: user.id,
       sellerId: service.sellerId,
@@ -89,9 +92,8 @@ export async function createOrder(serviceId: string, formData: FormData) {
       songUrl: data.songUrl || null,
       priceCents: service.priceCents,
       feeCents: feeFor(service.priceCents),
-    })
-    .returning({ id: orders.id });
-  redirect(`/orders/${o.id}`);
+    });
+  redirect(`/orders/${id}`);
 }
 
 type Actor = "buyer" | "seller";
@@ -173,6 +175,7 @@ export async function createReview(orderId: string, formData: FormData) {
       rating: data.rating,
       body: data.body,
     })
-    .onConflictDoNothing();
+    // A second review for the same order is ignored (unique index on order_id).
+    .onDuplicateKeyUpdate({ set: { orderId } });
   revalidatePath(`/orders/${orderId}`);
 }

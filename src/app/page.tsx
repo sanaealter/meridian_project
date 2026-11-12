@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import Link from "next/link";
 import { listServices, platformStats } from "@/lib/queries";
 import { FEE_BPS, rating } from "@/lib/format";
@@ -23,6 +24,7 @@ const steps = [
 ];
 
 export default async function Home() {
+  await connection(); // live data: render on each request, not at build time
   const [stats, featured] = await Promise.all([platformStats(), listServices({ verifiedOnly: true, limit: 6 })]);
 
   return (

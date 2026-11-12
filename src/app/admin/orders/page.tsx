@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { desc, eq } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
+import { alias } from "drizzle-orm/mysql-core";
 import { db } from "@/db";
-import { orderStatusEnum, orders, services, users, type OrderStatus } from "@/db/schema";
+import { ORDER_STATUSES, orders, services, users, type OrderStatus } from "@/db/schema";
 import { adminUpdateOrder } from "@/app/admin/actions";
 import { date, money, statusLabel } from "@/lib/format";
 import { StatusTag } from "@/components/ui";
@@ -14,7 +14,7 @@ const seller = alias(users, "seller");
 
 export default async function AdminOrders({ searchParams }: PageProps<"/admin/orders">) {
   const sp = await searchParams;
-  const status = orderStatusEnum.enumValues.includes(sp.status as OrderStatus) ? (sp.status as OrderStatus) : undefined;
+  const status = ORDER_STATUSES.includes(sp.status as OrderStatus) ? (sp.status as OrderStatus) : undefined;
 
   const rows = await db
     .select({ order: orders, title: services.title, buyer: buyer.username, seller: seller.username })
@@ -33,7 +33,7 @@ export default async function AdminOrders({ searchParams }: PageProps<"/admin/or
         <Link href="/admin/orders" className={!status ? "text-cue" : "text-muted hover:text-ink"}>
           All
         </Link>
-        {orderStatusEnum.enumValues.map((s) => (
+        {ORDER_STATUSES.map((s) => (
           <Link key={s} href={`/admin/orders?status=${s}`} className={status === s ? "text-cue" : "text-muted hover:text-ink"}>
             {statusLabel[s]}
           </Link>
@@ -58,7 +58,7 @@ export default async function AdminOrders({ searchParams }: PageProps<"/admin/or
                 <label className="text-sm text-muted">
                   Status
                   <select name="status" defaultValue={o.status} className="field mt-1 w-56">
-                    {orderStatusEnum.enumValues.map((s) => (
+                    {ORDER_STATUSES.map((s) => (
                       <option key={s} value={s}>
                         {statusLabel[s]}
                       </option>

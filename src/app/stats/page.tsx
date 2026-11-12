@@ -1,3 +1,4 @@
+import { connection } from "next/server";
 import { platformStats } from "@/lib/queries";
 import { FEE_BPS, money, rating } from "@/lib/format";
 import { PageTitle } from "@/components/ui";
@@ -5,6 +6,7 @@ import { PageTitle } from "@/components/ui";
 export const metadata = { title: "Open statistics" };
 
 export default async function StatsPage() {
+  await connection(); // live data: render on each request, not at build time
   const s = await platformStats();
   const groups = [
     {
